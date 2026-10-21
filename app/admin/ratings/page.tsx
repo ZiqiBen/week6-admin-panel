@@ -1,0 +1,11 @@
+import { requireSuperadmin, formatDate } from "../admin";
+
+export default async function AdminRatingsPage() {
+  const { supabase } = await requireSuperadmin();
+  const { data: ratings } = await supabase.from("generation_votes").select("id, generation_id, user_id, vote, created_at, ai_generations(category, prompt)").order("created_at", { ascending: false });
+  const rows = ratings ?? [];
+  const upvotes = rows.filter((row) => row.vote === 1).length;
+  const downvotes = rows.filter((row) => row.vote === -1).length;
+
+  return <section className="surface p-6 sm:p-8"><div className="mb-7"><p className="text-sm text-[#63a9ff]">Feedback</p><h1 className="mt-2 text-3xl font-semibold text-white">Ratings & votes</h1><p className="mt-3 text-sm leading-6 text-[#9aa7b8]">Read-only feedback from the community.</p></div><div className="mb-7 grid gap-4 sm:grid-cols-3"><div className="surface-soft p-4"><p className="text-sm text-[#9aa7b8]">Total</p><p className="mt-2 text-2xl font-semibold text-white">{rows.length}</p></div><div className="surface-soft p-4"><p className="text-sm text-[#9aa7b8]">Helpful</p><p className="mt-2 text-2xl font-semibold text-[#75e69a]">{upvotes}</p></div><div className="surface-soft p-4"><p className="text-sm text-[#9aa7a8]">Needs work</p><p className="mt-2 text-2xl font-semibold text-[#ff9f96]">{downvotes}</p></div></div><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="border-b border-white/[0.08] text-[#6f7e91]"><tr><th className="pb-3 font-medium">Vote</th><th className="pb-3 font-medium">Media</th><th className="pb-3 font-medium">User ID</th><th className="pb-3 font-medium">Date</th></tr></thead><tbody>{rows.map((row) => <tr key={row.id} className="border-b border-white/[0.06]"><td className="py-4">{row.vote === 1 ? <span className="text-[#75e69a]">Upvote</span> : <span className="text-[#ff9f96]">Downvote</span>}</td><td className="max-w-md truncate py-4 text-[#dce7f5]">{row.ai_generations?.[0]?.prompt ?? row.generation_id}</td><td className="py-4 font-mono text-xs text-[#7f8da1]">{row.user_id}</td><td className="py-4 text-[#9aa7b8]">{formatDate(row.created_at)}</td></tr>)}</tbody></table>{!rows.length && <p className="py-8 text-sm text-[#7f8da1]">No ratings found.</p>}</div></section>;
+}
