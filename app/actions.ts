@@ -88,15 +88,19 @@ async function buildCommunityPost(category: string, prompt: string) {
   throw new Error(`All Gemini models failed: ${failures.join("; ")}`);
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(formData: FormData) {
   const supabase = await createSupabaseServerClient();
   const headerStore = await headers();
   const origin = getSiteUrl(headerStore.get("origin"));
+  const requestedNext = formData.get("next");
+  const next = typeof requestedNext === "string" && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+    ? requestedNext
+    : "/profile";
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${origin}/auth/callback`,
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
 
