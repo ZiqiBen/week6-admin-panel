@@ -11,12 +11,12 @@ function clean(value: FormDataEntryValue | null) {
 }
 
 function getSiteUrl(origin: string | null) {
-  if (origin && !origin.includes("localhost")) {
-    return origin;
-  }
-
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+
+  if (origin && !origin.includes("localhost")) {
+    return origin;
   }
 
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
