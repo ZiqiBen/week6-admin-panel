@@ -3,6 +3,8 @@ import { signOut } from "../actions";
 import { ADMIN_RESOURCES } from "./resources";
 
 export function AdminNav() {
+  const publicAppUrl = process.env.NEXT_PUBLIC_PUBLIC_APP_URL ?? "https://week1-hello-world.vercel.app";
+
   return (
     <header className="mb-10 grid gap-5">
       <div className="flex flex-wrap items-center justify-between gap-5">
@@ -16,7 +18,7 @@ export function AdminNav() {
         <Link href="/admin/media" className="nav-link">Media</Link>
         <Link href="/admin/images" className="nav-link">Images</Link>
         <Link href="/admin/ratings" className="nav-link">Ratings</Link>
-        <Link href="/" className="nav-link">Public app</Link>
+        <Link href={publicAppUrl} className="nav-link">Public app</Link>
         <form action={signOut}><button className="nav-link">Sign out</button></form>
       </nav>
       </div>

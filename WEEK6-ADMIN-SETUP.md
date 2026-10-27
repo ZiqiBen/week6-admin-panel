@@ -63,11 +63,16 @@ Configure these environment variables in Vercel:
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 NEXT_PUBLIC_SITE_URL
+NEXT_PUBLIC_PUBLIC_APP_URL
 ```
 
 Add the deployed admin URL to Supabase Authentication > URL Configuration and
 Google provider settings. Turn off Vercel Deployment Protection so the app can
 be checked in an Incognito window, then test that:
+
+The admin deployment root redirects to `/admin`. Set
+`NEXT_PUBLIC_PUBLIC_APP_URL` to the separate caption/rating app URL so the
+admin navigation can still open the public application.
 
 - a signed-out user is redirected to Google login;
 - a signed-in non-superadmin is denied;
