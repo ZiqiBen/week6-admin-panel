@@ -55,9 +55,74 @@ create table if not exists public.prompt_chain_mix (
   updated_at timestamptz not null default now()
 );
 
+-- A coding-specific chain makes the read-only admin views useful immediately.
+insert into public.prompt_chains (id, name, description, is_active)
+values (
+  '11111111-1111-4111-8111-111111111111',
+  'Algorithm Coach',
+  'Analyzes a coding problem, selects an algorithm pattern, explains the solution, and validates its complexity and edge cases.',
+  true
+)
+on conflict (id) do update set
+  name = excluded.name,
+  description = excluded.description,
+  is_active = excluded.is_active;
+
+insert into public.prompt_chain_steps
+  (id, prompt_chain_id, step_order, name, prompt_template)
+values
+  (
+    '11111111-1111-4111-8111-111111111101',
+    '11111111-1111-4111-8111-111111111111',
+    1,
+    'Analyze the problem',
+    'Read {{user_question}}. Identify the input, expected output, constraints, edge cases, and the algorithm topic without solving it yet.'
+  ),
+  (
+    '11111111-1111-4111-8111-111111111102',
+    '11111111-1111-4111-8111-111111111111',
+    2,
+    'Select an algorithm pattern',
+    'Choose the best reusable pattern for the analyzed problem, such as two pointers, sliding window, graph traversal, binary search, or dynamic programming. Explain why it fits.'
+  ),
+  (
+    '11111111-1111-4111-8111-111111111103',
+    '11111111-1111-4111-8111-111111111111',
+    3,
+    'Build the explanation',
+    'Develop a clear step-by-step solution. Start with a useful hint, then explain the state, transitions, or data structures needed by the selected pattern.'
+  ),
+  (
+    '11111111-1111-4111-8111-111111111104',
+    '11111111-1111-4111-8111-111111111111',
+    4,
+    'Generate and annotate code',
+    'Write a concise implementation for {{preferred_language}}. Use descriptive names and annotate the important algorithm decisions without adding unrelated code.'
+  ),
+  (
+    '11111111-1111-4111-8111-111111111105',
+    '11111111-1111-4111-8111-111111111111',
+    5,
+    'Validate complexity and edge cases',
+    'Check the proposed code with representative and boundary inputs. State its time and space complexity and call out the most likely implementation mistake.'
+  )
+on conflict (id) do update set
+  prompt_chain_id = excluded.prompt_chain_id,
+  step_order = excluded.step_order,
+  name = excluded.name,
+  prompt_template = excluded.prompt_template;
+
 insert into public.prompt_chain_mix (name, description)
 select 'Default mix', 'Default prompt chain selection mix.'
 where not exists (select 1 from public.prompt_chain_mix);
+
+update public.prompt_chain_mix
+set
+  description = 'Uses the Algorithm Coach workflow for coding interview questions.',
+  chain_ids = '["11111111-1111-4111-8111-111111111111"]'::jsonb,
+  weights = '{"11111111-1111-4111-8111-111111111111": 1.0}'::jsonb,
+  is_active = true
+where name = 'Default mix';
 
 create table if not exists public.terms (
   id uuid primary key default gen_random_uuid(),
