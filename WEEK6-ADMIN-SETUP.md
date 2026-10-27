@@ -8,6 +8,7 @@ been applied:
 1. `supabase/week3-auth.sql`
 2. `supabase/week4-ai-coach-rls.sql`
 3. `supabase/week6-admin.sql`
+4. `supabase/week7-admin-resources.sql`
 
 ## 2. Bootstrap the first superadmin
 
@@ -33,6 +34,18 @@ The current implementation is under `/admin` in this repository. It includes:
 - `/admin/users`: read-only profiles
 - `/admin/media`: create, read, update, and delete AI media
 - `/admin/ratings`: read-only votes and rating summary
+- `/admin/images`: image upload plus image create/read/update/delete
+- `/admin/data/prompt-chains`: read-only prompt chains
+- `/admin/data/prompt-chain-steps`: read-only prompt chain steps
+- `/admin/data/prompt-chain-mix`: read/update prompt chain selection mix
+- `/admin/data/terms`: terms CRUD
+- `/admin/data/generation-requests`: read-only generation requests
+- `/admin/data/ai-generation-examples`: AI generation example CRUD
+- `/admin/data/llm-models`: LLM model CRUD
+- `/admin/data/llm-providers`: LLM provider CRUD
+- `/admin/data/llm-responses`: read-only LLM responses
+- `/admin/data/allowed-signup-domains`: allowed signup domain CRUD
+- `/admin/data/whitelisted-email-addresses`: whitelisted e-mail CRUD
 
 The server checks both Google authentication and `profiles.is_superadmin`.
 Supabase RLS policies also protect admin mutations.
@@ -60,5 +73,7 @@ be checked in an Incognito window, then test that:
 - a signed-in non-superadmin is denied;
 - a superadmin can access every admin route;
 - media CRUD works;
+- every Week 7 resource page has the required read/update/CRUD access;
+- image upload, metadata update, viewing, and deletion work;
 - users and ratings are visible;
 - the public app still works.

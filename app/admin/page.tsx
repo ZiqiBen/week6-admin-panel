@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireSuperadmin, formatDate } from "./admin";
+import { ADMIN_RESOURCES } from "./resources";
 
 export default async function AdminDashboard() {
   const { supabase } = await requireSuperadmin();
@@ -65,6 +66,30 @@ export default async function AdminDashboard() {
           </ul>
         </section>
       </div>
+
+      <section className="surface mt-8 p-6 sm:p-7">
+        <p className="text-sm text-[#63a9ff]">Data directory</p>
+        <h2 className="mt-2 text-2xl font-semibold text-white">Admin resources</h2>
+        <p className="mt-3 text-sm leading-6 text-[#9aa7b8]">Open every required read-only, update-only, and CRUD data view.</p>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {ADMIN_RESOURCES.map((resource) => (
+            <Link key={resource.slug} href={`/admin/data/${resource.slug}`} className="surface-soft p-4 transition hover:border-[#3f628c] hover:bg-white/[0.04]">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="font-medium text-[#eaf2ff]">{resource.label}</h3>
+                <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] uppercase tracking-wide text-[#8ea0b8]">{resource.permission}</span>
+              </div>
+              <p className="mt-2 text-sm leading-6 text-[#7f8da1]">{resource.description}</p>
+            </Link>
+          ))}
+          <Link href="/admin/images" className="surface-soft p-4 transition hover:border-[#3f628c] hover:bg-white/[0.04]">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-medium text-[#eaf2ff]">Images</h3>
+              <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] uppercase tracking-wide text-[#8ea0b8]">CRUD</span>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-[#7f8da1]">Upload and manage the application image library.</p>
+          </Link>
+        </div>
+      </section>
     </section>
   );
 }
