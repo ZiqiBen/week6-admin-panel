@@ -112,17 +112,22 @@ on conflict (id) do update set
   name = excluded.name,
   prompt_template = excluded.prompt_template;
 
-insert into public.prompt_chain_mix (name, description)
-select 'Default mix', 'Default prompt chain selection mix.'
-where not exists (select 1 from public.prompt_chain_mix);
-
-update public.prompt_chain_mix
-set
-  description = 'Uses the Algorithm Coach workflow for coding interview questions.',
-  chain_ids = '["11111111-1111-4111-8111-111111111111"]'::jsonb,
-  weights = '{"11111111-1111-4111-8111-111111111111": 1.0}'::jsonb,
-  is_active = true
-where name = 'Default mix';
+insert into public.prompt_chain_mix
+  (id, name, description, chain_ids, weights, is_active)
+values (
+  '11111111-1111-4111-8111-111111111201',
+  'Algorithm Coach mix',
+  'Uses the Algorithm Coach workflow for coding interview questions.',
+  '["11111111-1111-4111-8111-111111111111"]'::jsonb,
+  '{"11111111-1111-4111-8111-111111111111": 1.0}'::jsonb,
+  true
+)
+on conflict (id) do update set
+  name = excluded.name,
+  description = excluded.description,
+  chain_ids = excluded.chain_ids,
+  weights = excluded.weights,
+  is_active = excluded.is_active;
 
 create table if not exists public.terms (
   id uuid primary key default gen_random_uuid(),
