@@ -75,7 +75,7 @@ The admin deployment root redirects to `/admin`. Set
 admin navigation can still open the public application.
 
 - a signed-out user is redirected to Google login;
-- a signed-in non-superadmin is denied;
+- a signed-in non-superadmin sees `/admin-denied` with a clear explanation and can sign out;
 - a superadmin can access every admin route;
 - media CRUD works;
 - every Week 7 resource page has the required read/update/CRUD access;

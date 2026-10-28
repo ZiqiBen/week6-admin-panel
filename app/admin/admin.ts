@@ -15,7 +15,7 @@ export async function requireSuperadmin() {
     .eq("id", user.id)
     .maybeSingle<{ is_superadmin: boolean }>();
 
-  if (!profile?.is_superadmin) redirect("/?admin=denied");
+  if (!profile?.is_superadmin) redirect("/admin-denied");
 
   return { supabase, user };
 }
